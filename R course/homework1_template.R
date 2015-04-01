@@ -23,13 +23,14 @@
 ## ---- Documentation ----
 
 # DESCRIPTION
-# ... write at least one paragraph about what the function does ...
+# Function calculates winsorized mean.
 #
 # ARGUMENTS
-# ... document each of the function's arguments ...
+# x - numeric vector, k - elements to replace
 #
 # RETURN VALUE
-# ... describe what kind of object the function returns ...
+# winsor returns a winsorized mean if the values in x is computed as numeric vector of length one. If x contains NA
+# they are put at the begining of the vector when sorting x values in ascending order.
 
 ## ---- Function ----
 
@@ -45,7 +46,7 @@ winsor <- function(x, k){
   len <- length(x)
   stopifnot(k <= ((len-1)/2))
   #sort
-  x <- sort(x)
+  x <- sort(x, na.last = F)
   smallest <- x[k+1]
   largest <- x[len-k]
   begin <- rep(smallest,k)
@@ -89,20 +90,23 @@ do.call(winsor, list(x = 1, k = 0))
 ## ---- Documentation ----
 
 # DESCRIPTION
-# This function changes the sign of each element in a given numeric vector
+# This function replaces each missing value in a given numeric vector
+# with an arithmetic mean of its preceding and following element
 #
 # ARGUMENTS
 # x - a numeric vector
 #
 # RETURN VALUE
-# a numeric vector, -x
+# a numeric vector
 
 ## ---- Function ----
-
-chgsgn <- function(x) # Just an example, TO DO: DEL ME
-{
+replacena <- function(x){
   stopifnot(is.numeric(x))
-  -x
+  pos <- which(is.na(x)==T)
+  res <- sapply(pos, function(i) (x[i-1]+x[i+1])/2)
+  stopifnot(length(which(is.na(res)))==0)
+  x[pos] <- res
+  x
 }
 
 ## ---- Examples ----
@@ -110,16 +114,17 @@ chgsgn <- function(x) # Just an example, TO DO: DEL ME
 # Just a bunch of examples, TO DO: DEL ME
 # tests:
 library(testthat)
-expect_identical(chgsgn(numeric(0)), numeric(0))
-expect_error(chgsgn(mean))
-expect_equivalent(chgsgn(c(-1,2,3)), c(1,-2,-3))
-expect_equivalent(chgsgn(c(-1,2,NA)), c(1,-2,NA))
+expect_identical(replacena(numeric(0)), numeric(0))
+expect_error(replacena(mean))
+expect_equivalent(replacena(c(-1,NA,3)), c(-1,1,3))
+expect_equivalent(replacena(c(-1,2,NA)), c(1,-2,NA))
 test <- rnorm(10)
 expect_equivalent(chgsgn(test), -test)
 # ... (at least 5 more testthat tests...)
 
 # examples:
-chgsgn(rnorm(10)) # some random data
+vec <- c(NA, NA, 2, 3)
+replacena(vec) # some random data
 
 
 
