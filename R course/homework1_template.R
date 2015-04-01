@@ -106,22 +106,26 @@ replacena <- function(x){
   res <- sapply(pos, function(i) (x[i-1]+x[i+1])/2)
   stopifnot(length(which(is.na(res)))==0)
   x[pos] <- res
-  x
+  as.numeric(x)
 }
 
 ## ---- Examples ----
-
-# Just a bunch of examples, TO DO: DEL ME
 # tests:
 library(testthat)
 expect_identical(replacena(numeric(0)), numeric(0))
 expect_error(replacena(mean))
 expect_equivalent(replacena(c(-1,NA,3)), c(-1,1,3))
-expect_equivalent(replacena(c(-1,2,NA)), c(1,-2,NA))
-test <- rnorm(10)
-expect_equivalent(chgsgn(test), -test)
-# ... (at least 5 more testthat tests...)
-
+expect_error(replacena(c(-1,2,NA)))
+test <- c(1,2,3,NA,7,9,NA,100,30,NA,60)
+expect_equivalent(replacena(test), c( 1, 2, 3, 5, 7, 9, 54.5, 100, 30, 45, 60))
+test2 <- c(1, NA, Inf)
+expect_equivalent(replacena(test2), c(1,Inf,Inf))
+test3 <- c()
+expect_error(replacena(test3))
+test4 <- rep(NA, 10)
+expect_error(replacena(test4))
+test5 <- rnorm(100)
+expect_identical(replacena(test5),test5)
 # examples:
 vec <- c(NA, NA, 2, 3)
 replacena(vec) # some random data
