@@ -131,49 +131,113 @@ vec <- c(NA, NA, 2, 3)
 replacena(vec) # some random data
 
 
-
 ## ------------------------ Exercise 01.03 ----------------------------
 
 ## ---- Documentation ----
 
-# I don't know how to solve this exercise. :(
+# DESCRIPTION
+# function neighboreq() determines the set of all the indices i such that x_i = x_{i+1}.
+#
+# ARGUMENTS
+# x - atomic vector
+#
+# RETURN VALUE
+# integer vector of idices which fullfil x_i = x_{i+1}
 
 ## ---- Function ----
 
-# I don't know how to solve this exercise. :(
+neighboreq <- function(x){
+  stopifnot(is.atomic(x))
+  len <- length(x)
+  xL <- x[-len]
+  xF <- x[-1]
+  which(xL == xF)
+}
 
 ## ---- Examples ----
+#unit tests
+test1 <- rep(c(TRUE, FALSE), 4)
+expect_identical(neighboreq(test1),integer(0))
 
-# I don't know how to solve this exercise. :(
+test2 <- rep(c(TRUE, TRUE), 4)
+expect_identical(neighboreq(test2), c(1:7))
 
+test3 <- c(NA, NA, NA)
+expect_identical(neighboreq(test3), integer(0))
 
+test4 <- c(NA, NA, 2,  2)
+expect_equal(neighboreq(test4), 3)
 
+test5 <- list(a = 1)
+expect_error(neighboreq(test5))
+
+expect_error(neighboreq(mean))
+
+test6 <- as.data.frame(matrix(1, 2, 2))
+expect_error(neighboreq(test6))
+
+test7 <- c(Inf, Inf)
+expect_equal(neighboreq(test7), 1)
+
+expect_that(neighboreq(test7), is_a("integer"))
+expect_that(neighboreq(test2), is_a("integer"))
+
+#examples
+neighboreq(c(Inf, Inf, -Inf))
+neighboreq(c('apple', 'car', 'car', 'car', 'apple'))
+neighboreq(rep(c(T,F,T), 3))
+neighboreq(rep(c(2L,1L,1L), 3))
+neighboreq(rep(c(1,2,2,3,1), 3))
+neighboreq(rep(c(1,NA,NA,3,1), 3))
+neighboreq(matrix(1,2,3))
+neighboreq(list(a = 1, b =3, c ="car"))
+neighboreq(rnorm(100))
+neighboreq(sample(c(0,1), 100, replace = TRUE))
 
 ## ------------------------ Exercise 01.04 ----------------------------
 
 ## ---- Documentation ----
-
-# ... TO DO ...
-
-
+# DESCRIPTION
+# sample2() generates a random sample (with replacement) consisting of
+# k elements in a given vector x
+#
+# ARGUMENTS
+# x - atomic vector
+#
+# RETURN VALUE
+# vector of length k
 
 ## ---- Function ----
 
-# ... TO DO ...
-
-
+sample2 <- function(x, k){
+  stopifnot(k>=0, is.atomic(x), length(x) >= 1L)
+  len = length(x)
+  indice <- round(runif(k, 1, len))
+  x[indice]
+}
 
 ## ---- Examples ----
-
-# ... TO DO ...
-
-
-
-
-
-
-
-
+#unit test
+vec1 <- rep(c(1,2,3), 10)
+expect_error(sample2(vec1))
+expect_error(sample2(mean, 1))
+expect_error(sample2(vec1, -1))
+expect_equal(length(sample2(vec1, 10)), 10)
+expect_that(sample2(vec1, 10), is_a("numeric"))
+expect_that(sample2(vec1, 0), is_a("numeric"))
+expect_identical(sample2(vec1, 0), numeric(0))
+vec2 <- rep(c("car", "car", "apple"), 5)
+expect_that(sample2(vec2, 10), is_a("character"))
+vec3 <- rep(c(F, F, T), 5)
+expect_that(sample2(vec3, 10), is_a("logical"))
+vec4 <- rep(c(F, NA, T), 5)
+expect_that(sample2(vec4, 10), is_a("logical"))
+vec5 <- c(1,1,1)
+expect_equal(sample2(vec5, 1), 1)
+expect_error(sample2(list(a =1 ), 1))
+vec6 <- c(1L, 1L, 1L)
+expect_equal(sample2(vec6, 1), 1)
+expect_that(sample2(vec6, 10), is_a('integer'))
 
 ## ------------------------ Exercise 01.05 ----------------------------
 
