@@ -110,7 +110,7 @@ expect_error(is_prime(list(a = 1L)))
 # n - a single natural number
 # x - a numeric vector of length k (for some k) with unique elements,
 # p - a numeric vector of length k such that pi >= 0 and p elements sum to 1. If the elements in p don’t sum up to 1,
-# when warning is shown and p is normalized.x[common==T,colNames]
+# when warning is shown and p is normalized
 #
 # RETURN VALUE
 # a numeric vector of length n
