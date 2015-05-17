@@ -1,0 +1,26 @@
+---
+title: "Plot colors()"
+author: "Olga Mierzwa"
+date: "17.05.2015"
+output: html_document
+---
+
+```{r, echo=FALSE, eval = T, fig.height=150}
+cl <- colors()
+len <- length(cl)
+#dev.new(width=5, height=4)
+plot.new()
+plot(c(1, 150), c(1,50*len), type = "n", bty ="n",axes=F,frame.plot=F, xaxt='n', ann=FALSE, yaxt='n',yaxs="i")
+for (i in 0:(len-1)){
+  rect(1, 1 + i*50, 150, 40+i*50, col = cl[(i+1)], border = cl[(i+1)])
+  rgb <- col2rgb(cl[(i+1)])
+  wb <- floor((rgb[1]*299 + rgb[2]*587 + rgb[3]*114)/1000)
+  if(wb > 125){
+    textCol <- "black" 
+  }else{
+    textCol <- "white"  
+  }
+  text(75, 20 + i*50, cl[(i+1)], col = textCol, cex = 0.8)
+}
+   
+```
