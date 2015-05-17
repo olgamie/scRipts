@@ -1,0 +1,138 @@
+---
+title: "Systemfit package"
+author: "Olga Mierzwa"
+date: "16.05.2015"
+output: pdf_document
+---
+
+# Introduction to systemfit
+Many statistical analyses requires bulding models containing systems of structurally related equations. The systemfit package offers the possibilty to estimate systems of linear and non-linear equations within the R language. Package offers commonly use econemtrics techniques for estimation: “ordinary least squares”
+(OLS), “seemingly unrelated regression” (SUR), and the instrumental variable (IV) methods
+“two-stage least squares” (2SLS) and “three-stage least squares” (3SLS), where SUR
+and 3SLS estimations can optionally be iterated. Moreover, the systemfit package enable statistical testing.
+
+# Systemfit functions
+Systemfit package was created by Arne Henningsen and Jeff D. Hamann and is publically availabe on CRAN. The package contains 32 functions. The most basic function is **systemfit** function and this document will focus on introducing it's main functionality.
+
+## Basic systemfit function
+The **systemfit** function is used to estimate systems of linear equations using Ordinary Least Squares (OLS), Weighted Least Squares (WLS), Seemingly Unrelated Regression (SUR), Two-Stage Least Squares (2SLS), Weighted TwoStage Least Squares (W2SLS) or Three-Stage Least Squares (3SLS). The systemfit follows lm function functionality in terms of user interface and results. The econometrics formulas used in the systemfit package estimation are described in [systemfit: A Package for Estimating Systems of
+Simultaneous Equations in R][1]
+
+
+### Using systemfit
+Systemfit function contains many arguments however there is only one which is always required - **formula**. It can be either a single formula to estimate a single model or a list of formulas to estimate the whole system. Each formula is a standard regression model in R language.
+
+Data for the systemfit are sourced from environment unless speciied by an optional parameter **data** which should be a data frame containing the variables in the model.
+
+```{r, message =FALSE}
+library(systemfit)
+data( "Kmenta" )
+eq1 <- consump ~ price + income
+eq2 <- consump ~ price + farmPrice + trend
+system <- list( demand = eq1, supply = eq2 )
+## estimation (be default OLS)
+eqRes <- systemfit( system, data=Kmenta )
+```
+
+Commonly used argument is **method**. It is a string object that represents the estimation method: "OLS", "WLS", "SUR", "2SLS", "W2SLS", or "3SLS".
+
+```{r}
+## iterated SUR estimation
+fitsur <- systemfit( system, "SUR", data = Kmenta )
+```
+
+In case a modeller would like to estimate "IV" model, she should include **ins** argument. It should be provided in the following form. One-sided model formula specifying instrumental variables or a list of one-sided model formulas if instruments varies between different equations.
+
+In case modeller wishes to impose restrictions on coefficients in the quations she has can express them by:
+
+* **restrict.matrix** an optional m x n matrix where m equals to the number of restrictions, n is  the number of all coefficients from all equations.
+There is a possibility to provide the restrictions in symbolic form.
+
+```{r}
+restrict <- "demand_price + supply_price = 0"
+fitsurRmat <- systemfit(system, method = "SUR", data = Kmenta, restrict.matrix = restrict)
+```
+
+* **restrict.rhs** an optional vector with j elements to impose linear restrictions with
+default which cosists of j zeros.
+
+```{r}
+Rmat <- matrix(0, nrow = 1, ncol = 7)
+Rmat[1, 2] <- 1
+Rmat[1, 6] <- 1
+qvec <- c(0)
+fitsurRmatNum <- systemfit(system, method = "SUR", data = Kmenta, restrict.matrix = Rmat, restrict.rhs = qvec)
+```
+
+* **restrict.regMat** an optional matrix to impose restrictions on the coefficients by post-multiplying
+the regressor matrix with this matrix.
+
+```{r}
+modRegMat <- matrix(0, nrow = 7, ncol = 6)
+modRegMat[1:5, 1:5] <- diag(5)
+modRegMat[6, 2] <- -1
+modRegMat[7, 6] <- 1
+fitsurRegMat <- systemfit(system, method = "SUR", data = Kmenta, restrict.regMat = modRegMat)
+```
+
+The rest of the possible systemfit parameters are described in [package documentation][2].
+
+### Returned objects
+Retured object of systemfit returns is a list of the class systemfit that consists of the all results that are producted by the entire system. One object of this list is "eq" that is also a list and contains one object for each estimated equation. Each "eq" objects are of the special class systemfit.equation and corresponds to the results for specific equation.
+
+```{r}
+fitols <- systemfit( system, data=Kmenta )
+print( fitols )
+```
+
+The **summary** method can be used to compute and print summary results of systemfit.
+```{r}
+summary(fitols)
+```
+
+In order to reduce the amount of the printed outcome use the optional arguments residCov and equations.
+Argument **residCov** controls printing the covariance matrix and the correlation
+matrix of the residuals. Argument **equations** controls the equations results.
+```{r}
+summary(fitols, residCov = FALSE, equations = FALSE)
+```
+
+## Testing linear restrictions
+
+Systemfit allows to test linear restrictions by an F test, two Wald tests and
+an LR test. Testing can be done using method **linearHypothesis** for the F test and
+Wald tests, **lrtest** method for LR tests.
+
+### Method linearHypothesis
+
+Linear.hypothesis needs unrestricted regression from systemfit as it's first argument. The second and third arguments are the restriction matrix and the optional vector. The optional argument test is a character string, "FT", "F", or "Chisq", specifying the test to conduct.
+
+```{r}
+linearHypothesis(fitsur, Rmat, qvec, test = "FT")
+
+linearHypothesis(fitsur, Rmat, qvec, test = "F")
+
+linearHypothesis(fitsur, Rmat, qvec, test = "Chisq")
+```
+
+### Method lrtest
+All arguments of the lrtest method for systemfit should be fitted model objects from systemfit. 
+
+```{r}
+lrtest(fitsurRmat, fitsur)
+```
+
+### Tests comparison
+All tests check the same hypothesis and suggest the same decision: The
+null hypothesis cannot be rejected at any reasonable level of significance.
+
+
+| Tests         | Results (Pr)  |
+| ------------- |:-------------:|
+| FT            | 0.3413        |
+| F             | 0.4407        |
+| Chisq         | 0.4351        |
+| LR            | 0.3899        |
+
+[1]: http://www.jstatsoft.org/v23/i04/paper
+[2]: http://cran.r-project.org/web/packages/systemfit/systemfit.pdf
