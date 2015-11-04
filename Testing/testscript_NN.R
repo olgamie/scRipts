@@ -3,9 +3,9 @@ library(readxl)
 library(openxlsx)
 library(dplyr)
 library(foreign)
-library("purrr")
-library("tidyr")
-library("lubridate")
+library(purrr)
+library(tidyr)
+library(lubridate)
 
 #set your working directory - output will be written there
 # setwd("C:/")
@@ -96,33 +96,10 @@ fat <- function(file, file2, mp, resultName){
 }
 
 # If you need to rerun the tests only run this part
-#file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/CF_NP/pruses_output~main1~output_det_2.xls"
-#file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/CF_NP/PruSes-TT_output_test2.xlsx"
-
-library(testthat)
-file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.txt"
-file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.dbf"
-
+file = "C:/Users/omierzwa/Documents/file1.xls"
+file2 = "C:/Users/omierzwa/Documents/file2.xlsx"
 #set file from which read sheet names (this should be Moses file because Excel has >25 sheets)
-#mp = excel_sheets(file)
-
-# test1 
-expect_equivalent(fat(file, file2, mp = 1, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-expect_equal(fat(file2, file, mp = 1, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-expect_equal(fat(file, file, mp = 1, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-expect_equal(fat(file2, file2, mp = 1, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-
-file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.xls"
-file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.dbf"
 mp = excel_sheets(file)
 
-expect_equivalent(fat(file, file2, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-expect_equivalent(fat(file, file, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-expect_equivalent(fat(file2, file, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-
-file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.xls"
-file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.txt"
-mp = excel_sheets(file)
-
-expect_equivalent(fat(file, file2, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
-expect_equivalent(fat(file2, file, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
+# ste mp = 1 if you are not runing Excel output
+fat(file, file2, mp = mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx"))
