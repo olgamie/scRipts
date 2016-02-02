@@ -96,8 +96,8 @@ fat <- function(file, file2, mp, resultName){
 }
 
 # If you need to rerun the tests only run this part
-#file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/CF_NP/pruses_output~main1~output_det_2.xls"
-#file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/CF_NP/PruSes-TT_output_test2.xlsx"
+#file = "C:/Users/file.xls"
+#file2 = "C:/Users/file.xlsx"
 
 library(testthat)
 file = "C:/Users/file.txt"
