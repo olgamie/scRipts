@@ -100,8 +100,8 @@ fat <- function(file, file2, mp, resultName){
 #file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/CF_NP/PruSes-TT_output_test2.xlsx"
 
 library(testthat)
-file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.txt"
-file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.dbf"
+file = "C:/Users/file.txt"
+file2 = "C:/Users/file.dbf"
 
 #set file from which read sheet names (this should be Moses file because Excel has >25 sheets)
 #mp = excel_sheets(file)
@@ -112,16 +112,16 @@ expect_equal(fat(file2, file, mp = 1, paste0("FAT_", format(Sys.time(), "%F_%H-%
 expect_equal(fat(file, file, mp = 1, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
 expect_equal(fat(file2, file2, mp = 1, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
 
-file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.xls"
-file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.dbf"
+file = "C:/Users/file.xls"
+file2 = "C:/Users/file.dbf"
 mp = excel_sheets(file)
 
 expect_equivalent(fat(file, file2, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
 expect_equivalent(fat(file, file, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
 expect_equivalent(fat(file2, file, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
 
-file = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.xls"
-file2 = "C:/Users/omierzwa/Documents/Triplea/Prudential/Pru-TestTool/FAT/output_individual_DATA_KOSTEN1_NNCP.txt"
+file = "C:/Users/file.xls"
+file2 = "C:/Users/file.txt"
 mp = excel_sheets(file)
 
 expect_equivalent(fat(file, file2, mp, paste0("FAT_", format(Sys.time(), "%F_%H-%M-%S"), ".xlsx")), "Done")
